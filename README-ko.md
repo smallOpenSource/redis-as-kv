@@ -5,10 +5,12 @@ Redis Sentinel을 사용하여 암호화된 키-값 저장소를 구현한 Pytho
 ## 주요 기능
 
 - **암호화된 데이터 저장**: Fernet 암호화를 사용하여 데이터를 안전하게 저장
-- **Redis Sentinel 지원**: 고가용성을 위한 Redis Sentinel 클러스터 연결
+- **Redis Sentinel 지원**: 고가용성을 위한 Redis Sentinel 클러스터 연결 (Sentinel 클러스터 구성 필요)
 - **JSON 데이터 지원**: JSON 형태의 복합 데이터 저장 및 조회
 - **환경 변수 암호화**: Redis 연결 정보도 암호화하여 .env 파일에 저장
 - **CLI 인터페이스**: 명령줄에서 쉽게 데이터 저장 및 조회
+
+> **주의**: 이 라이브러리는 Redis Sentinel 클러스터 구성이 필요하며, 단일 Redis 서버로는 사용할 수 없습니다.
 
 ## 설치
 
@@ -284,11 +286,13 @@ python app/sample-kafka.py
 ## 요구사항
 
 - Python 3.6+
-- Redis Server with Sentinel
+- **Redis Sentinel 클러스터**: 이 라이브러리는 고가용성을 위한 Redis Sentinel 클러스터 구성이 필요합니다. 단일 Redis 인스턴스로는 작동하지 않습니다.
 - 필수 패키지:
   - `redis`
   - `cryptography`
   - `python-dotenv`
+
+> **중요**: 이 라이브러리는 Redis Sentinel 클러스터 전용으로 설계되었으며, 최소 3개의 Sentinel 노드가 필요합니다. 단일 Redis 서버 설정은 지원되지 않습니다.
 
 ## 에러 처리
 

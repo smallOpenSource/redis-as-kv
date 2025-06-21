@@ -5,10 +5,12 @@ A Python library that implements an encrypted key-value store using Redis Sentin
 ## Key Features
 
 - **Encrypted Data Storage**: Securely store data using Fernet encryption
-- **Redis Sentinel Support**: High availability through Redis Sentinel cluster connections
+- **Redis Sentinel Support**: High availability through Redis Sentinel cluster connections (requires Sentinel cluster setup)
 - **JSON Data Support**: Store and retrieve complex data in JSON format
 - **Environment Variable Encryption**: Redis connection information is also encrypted and stored in .env file
 - **CLI Interface**: Easy data storage and retrieval from command line
+
+> **Note**: This library requires a Redis Sentinel cluster configuration and cannot be used with standalone Redis servers.
 
 ## Installation
 
@@ -284,11 +286,13 @@ See `app/README.md` for detailed usage instructions.
 ## Requirements
 
 - Python 3.6+
-- Redis Server with Sentinel
+- **Redis Server with Sentinel Cluster**: This library requires a Redis Sentinel cluster configuration for high availability. It does not work with standalone Redis instances.
 - Required packages:
   - `redis`
   - `cryptography`
   - `python-dotenv`
+
+> **Important**: This library is designed specifically for Redis Sentinel clusters and requires at least 3 Sentinel nodes for proper operation. Single Redis server setups are not supported.
 
 ## Error Handling
 
