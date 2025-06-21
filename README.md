@@ -1,91 +1,91 @@
 # Redis KeyVault
 
-Redis Sentinel을 사용하여 암호화된 키-값 저장소를 구현한 Python 라이브러리입니다. 중요한 정보를 안전하게 암호화하여 Redis에 저장하고 조회할 수 있습니다.
+A Python library that implements an encrypted key-value store using Redis Sentinel. It allows you to securely store and retrieve sensitive information by encrypting it before storing in Redis.
 
-## 주요 기능
+## Key Features
 
-- **암호화된 데이터 저장**: Fernet 암호화를 사용하여 데이터를 안전하게 저장
-- **Redis Sentinel 지원**: 고가용성을 위한 Redis Sentinel 클러스터 연결
-- **JSON 데이터 지원**: JSON 형태의 복합 데이터 저장 및 조회
-- **환경 변수 암호화**: Redis 연결 정보도 암호화하여 .env 파일에 저장
-- **CLI 인터페이스**: 명령줄에서 쉽게 데이터 저장 및 조회
+- **Encrypted Data Storage**: Securely store data using Fernet encryption
+- **Redis Sentinel Support**: High availability through Redis Sentinel cluster connections
+- **JSON Data Support**: Store and retrieve complex data in JSON format
+- **Environment Variable Encryption**: Redis connection information is also encrypted and stored in .env file
+- **CLI Interface**: Easy data storage and retrieval from command line
 
-## 설치
+## Installation
 
-필요한 패키지를 설치합니다:
+Install the required packages:
 
 ```bash
 pip install redis cryptography python-dotenv
 ```
 
-## 설정
+## Configuration
 
-### 1. 초기 설정
+### 1. Initial Setup
 
-스크립트를 처음 실행하면 Redis Sentinel 설정을 입력하라는 메시지가 나타납니다:
+When running the script for the first time, you'll be prompted to enter Redis Sentinel configuration:
 
 ```bash
 python redis_keyvault.py
 ```
 
-다음 정보를 입력해야 합니다:
-- Sentinel 노드 수 (최소 3개, 홀수)
-- Sentinel master 이름
-- Socket timeout 값
-- Redis 비밀번호
-- Redis DB 번호 (0-15)
-- 각 Sentinel 노드의 호스트명과 포트
+You need to provide the following information:
+- Number of Sentinel nodes (minimum 3, odd number)
+- Sentinel master name
+- Socket timeout value
+- Redis password
+- Redis DB number (0-15)
+- Hostname and port for each Sentinel node
 
-### 2. 환경 변수 구조
+### 2. Environment Variable Structure
 
-설정이 완료되면 `.env` 파일이 생성되며, 다음과 같은 암호화된 환경 변수들이 저장됩니다:
+After configuration is complete, a `.env` file will be created with the following encrypted environment variables:
 
 ```
-HASH_KEY=<암호화키>
+HASH_KEY=<encryption_key>
 REDIS_SENTINEL_NODE_COUNT=3
-REDIS_SENTINEL_MASTER_NAME=<암호화된_마스터명>
-REDIS_SENTINEL_TIMEOUT=<암호화된_타임아웃>
-REDIS_PASSWORD=<암호화된_비밀번호>
-REDIS_DB=<암호화된_DB번호>
-REDIS_SENTINEL_NODE_1=<암호화된_노드1정보>
-REDIS_SENTINEL_NODE_2=<암호화된_노드2정보>
-REDIS_SENTINEL_NODE_3=<암호화된_노드3정보>
+REDIS_SENTINEL_MASTER_NAME=<encrypted_master_name>
+REDIS_SENTINEL_TIMEOUT=<encrypted_timeout>
+REDIS_PASSWORD=<encrypted_password>
+REDIS_DB=<encrypted_db_number>
+REDIS_SENTINEL_NODE_1=<encrypted_node1_info>
+REDIS_SENTINEL_NODE_2=<encrypted_node2_info>
+REDIS_SENTINEL_NODE_3=<encrypted_node3_info>
 ```
 
-## 사용법
+## Usage
 
-### 명령줄 인터페이스
+### Command Line Interface
 
-#### 데이터 저장
-JSON 파일의 내용을 Redis에 저장합니다:
+#### Data Storage
+Store JSON file contents in Redis:
 
 ```bash
-python redis_keyvault.py save <json_파일>
+python redis_keyvault.py save <json_file>
 ```
 
-예시:
+Example:
 ```bash
 python redis_keyvault.py save database-config.json
 ```
 
-#### 데이터 조회
-저장된 데이터를 키로 조회합니다:
+#### Data Retrieval
+Retrieve stored data by key:
 
 ```bash
-python redis_keyvault.py get <키>
+python redis_keyvault.py get <key>
 ```
 
-예시:
+Example:
 ```bash
 python redis_keyvault.py get database-config
 ```
 
-### Python 모듈로 사용
+### Using as Python Module
 
 ```python
 from redis_keyvault import save_info, get_info, get_redis_connection
 
-# 데이터 저장
+# Store data
 data = {
     "host": "localhost",
     "port": 3306,
@@ -94,75 +94,75 @@ data = {
 }
 save_info("my-database", data)
 
-# 데이터 조회
+# Retrieve data
 retrieved_data = get_info("my-database")
 print(retrieved_data)
 
-# Redis 연결 객체 직접 사용
+# Direct Redis connection usage
 redis_conn = get_redis_connection()
 redis_conn.set("simple-key", "simple-value")
 ```
 
-## 사용 방법 (Usage)
+## Usage Examples
 
-### 1. 초기 설정
+### 1. Initial Setup
 
-처음 실행 시 Redis Sentinel 설정을 위한 대화형 프롬프트:
+Interactive prompt for Redis Sentinel configuration on first run:
 
 ```bash
 (rkv) H:\git_repo\redis-as-kv>python redis_keyvault.py
 
-.env 파일이 존재하지 않습니다.
+.env file does not exist.
 
-=== Redis Sentinel 설정 정보 입력 ===
+=== Redis Sentinel Configuration Input ===
 
-Sentinel 노드 수를 입력하세요 (최소 3개, 홀수): 3
+Enter number of Sentinel nodes (minimum 3, odd number): 3
 
-Sentinel master 이름 (예: redismaster): redismaster
-Socket timeout 값 (예: 1.0): 1.0
-Redis 비밀번호: data123!
-Redis DB 번호 (0-15): 9
+Sentinel master name (e.g., redismaster): redismaster
+Socket timeout value (e.g., 1.0): 1.0
+Redis password: data123!
+Redis DB number (0-15): 9
 
-=== Sentinel 노드 1 정보 입력 ===
-Sentinel 호스트명(예: L4, node1): 30.0.0.30
-Sentinel 포트 번호: 3410
+=== Sentinel Node 1 Information ===
+Sentinel hostname (e.g., L4, node1): 30.0.0.30
+Sentinel port number: 3410
 
-=== Sentinel 노드 2 정보 입력 ===
-Sentinel 호스트명(예: L4, node1): 30.0.0.31
-Sentinel 포트 번호: 3410
+=== Sentinel Node 2 Information ===
+Sentinel hostname (e.g., L4, node1): 30.0.0.31
+Sentinel port number: 3410
 
-=== Sentinel 노드 3 정보 입력 ===
-Sentinel 호스트명(예: L4, node1): 30.0.0.32
-Sentinel 포트 번호: 3410
+=== Sentinel Node 3 Information ===
+Sentinel hostname (e.g., L4, node1): 30.0.0.32
+Sentinel port number: 3410
 
-.env 파일이 성공적으로 생성되었습니다.
+.env file has been successfully created.
 
-이제 아래 명령어를 사용할 수 있습니다:
-  python redis_keyvault.py save <json_파일>
-  python redis_keyvault.py get <키>
+You can now use the following commands:
+  python redis_keyvault.py save <json_file>
+  python redis_keyvault.py get <key>
 ```
 
-### 2. 데이터 저장
+### 2. Data Storage
 
-샘플 JSON 파일들을 Redis KeyVault에 저장:
+Store sample JSON files in Redis KeyVault:
 
 ```bash
 (rkv) H:\git_repo\redis-as-kv>python redis_keyvault.py save samples/sample-proxysql.json
-데이터가 성공적으로 저장되었습니다. (키: info:sample-proxysql)
+Data successfully saved. (key: info:sample-proxysql)
 
 (rkv) H:\git_repo\redis-as-kv>python redis_keyvault.py save samples/sample-kafka.json   
-데이터가 성공적으로 저장되었습니다. (키: info:sample-kafka)
+Data successfully saved. (key: info:sample-kafka)
 
 (rkv) H:\git_repo\redis-as-kv>python redis_keyvault.py save samples/sample-opensearch.json 
-데이터가 성공적으로 저장되었습니다. (키: info:sample-opensearch)
+Data successfully saved. (key: info:sample-opensearch)
 
 (rkv) H:\git_repo\redis-as-kv>python redis_keyvault.py save samples/sample-mariadb.json    
-데이터가 성공적으로 저장되었습니다. (키: info:sample-mariadb)
+Data successfully saved. (key: info:sample-mariadb)
 ```
 
-### 3. 데이터 조회
+### 3. Data Retrieval
 
-저장된 설정을 키로 조회:
+Retrieve stored configurations by key:
 
 ```bash
 (rkv) H:\git_repo\redis-as-kv>python redis_keyvault.py get sample-proxysql
@@ -225,11 +225,41 @@ Sentinel 포트 번호: 3410
 }
 ```
 
-### 4. 실행 결과
+### 4. Execution Results
 
-![실행 결과](samples/result.png)
+![Execution Results](samples/result.png)
 
-## 예시 JSON 파일
+### 5. Application Usage Examples
+
+The `app/` folder contains examples of using stored configurations from Redis KeyVault in real applications:
+
+- **`app/sample-opensearch.py`**: OpenSearch client connection and document indexing/searching examples
+- **`app/sample-mariadb.py`**: MariaDB database connection and CRUD operation examples  
+- **`app/sample-kafka.py`**: Kafka Producer/Consumer connection and message processing examples
+
+Install required packages before running each example:
+
+```bash
+# For OpenSearch example
+pip install opensearch-py
+
+# For MariaDB example  
+pip install mysql-connector-python
+
+# For Kafka example
+pip install kafka-python
+```
+
+Run examples:
+```bash
+python app/sample-opensearch.py
+python app/sample-mariadb.py
+python app/sample-kafka.py
+```
+
+See `app/README.md` for detailed usage instructions.
+
+## Sample JSON Files
 
 `database-config.json`:
 ```json
@@ -244,41 +274,41 @@ Sentinel 포트 번호: 3410
 }
 ```
 
-## 보안 특징
+## Security Features
 
-- **이중 암호화**: 데이터와 연결 정보 모두 암호화
-- **Fernet 암호화**: 대칭 키 암호화로 안전한 데이터 보호
-- **환경 변수 보호**: Redis 연결 정보도 암호화하여 저장
-- **키 네임스페이싱**: 모든 키에 `info:` 접두사를 사용하여 네임스페이스 분리
+- **Double Encryption**: Both data and connection information are encrypted
+- **Fernet Encryption**: Secure data protection using symmetric key encryption
+- **Environment Variable Protection**: Redis connection information is also encrypted and stored
+- **Key Namespacing**: All keys use `info:` prefix for namespace separation
 
-## 요구사항
+## Requirements
 
 - Python 3.6+
 - Redis Server with Sentinel
-- 필수 패키지:
+- Required packages:
   - `redis`
   - `cryptography`
   - `python-dotenv`
 
-## 에러 처리
+## Error Handling
 
-- Redis 연결 실패 시 명확한 오류 메시지 제공
-- JSON 파싱 오류 감지 및 처리
-- 암호화/복호화 실패 시 적절한 예외 처리
-- 환경 설정 검증
+- Clear error messages when Redis connection fails
+- JSON parsing error detection and handling
+- Proper exception handling for encryption/decryption failures
+- Environment configuration validation
 
-## 라이선스
+## License
 
-이 프로젝트는 [LICENSE](LICENSE) 파일에 명시된 라이선스를 따릅니다.
+This project follows the license specified in the [LICENSE](LICENSE) file.
 
-## 기여하기
+## Contributing
 
-1. 이 저장소를 포크합니다
-2. 기능 브랜치를 생성합니다 (`git checkout -b feature/AmazingFeature`)
-3. 변경사항을 커밋합니다 (`git commit -m 'Add some AmazingFeature'`)
-4. 브랜치에 푸시합니다 (`git push origin feature/AmazingFeature`)
-5. Pull Request를 생성합니다
+1. Fork this repository
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Create a Pull Request
 
-## 문제 신고
+## Issue Reporting
 
-문제점이나 개선사항이 있다면 [Issues](../../issues) 페이지에서 신고해주세요.
+If you have any problems or suggestions for improvement, please report them on the [Issues](../../issues) page.
