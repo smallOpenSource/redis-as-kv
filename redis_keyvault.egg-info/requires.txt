@@ -1,0 +1,14 @@
+redis>=4.0.0
+cryptography>=3.4.0
+python-dotenv>=0.19.0
+
+[dev]
+pytest>=6.0
+pytest-cov
+black
+flake8
+
+[examples]
+opensearch-py>=2.0.0
+mysql-connector-python>=8.0.0
+kafka-python>=2.0.0

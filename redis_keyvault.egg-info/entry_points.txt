@@ -1,0 +1,2 @@
+[console_scripts]
+redis-keyvault = redis_keyvault.redis_keyvault:main

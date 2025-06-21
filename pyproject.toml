@@ -1,0 +1,64 @@
+[build-system]
+requires = ["setuptools>=45", "wheel", "setuptools_scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "redis-keyvault"
+version = "1.0.0"
+description = "A Python library that implements an encrypted key-value store using Redis Sentinel"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "Your Name", email = "your.email@example.com"}
+]
+keywords = ["redis", "sentinel", "encryption", "keyvault", "security"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Database",
+    "Topic :: Security :: Cryptography",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+requires-python = ">=3.6"
+dependencies = [
+    "redis>=4.0.0",
+    "cryptography>=3.4.0",
+    "python-dotenv>=0.19.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=6.0",
+    "pytest-cov",
+    "black",
+    "flake8",
+]
+examples = [
+    "opensearch-py>=2.0.0",
+    "mysql-connector-python>=8.0.0",
+    "kafka-python>=2.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/yourusername/redis-keyvault"
+Repository = "https://github.com/yourusername/redis-keyvault"
+Issues = "https://github.com/yourusername/redis-keyvault/issues"
+Documentation = "https://github.com/yourusername/redis-keyvault#readme"
+
+[project.scripts]
+redis-keyvault = "redis_keyvault.redis_keyvault:main"
+
+[tool.setuptools]
+packages = ["redis_keyvault"]
+
+[tool.setuptools.package-data]
+redis_keyvault = ["samples/*.json", "app/*.py"]

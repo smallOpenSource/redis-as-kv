@@ -1,0 +1,8 @@
+include README.md
+include README-ko.md
+include LICENSE
+recursive-include samples *.json *.png *.md
+recursive-include app *.py *.md
+recursive-include etc *.md *.cmd
+global-exclude __pycache__
+global-exclude *.py[co]

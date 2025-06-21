@@ -1,0 +1,360 @@
+Metadata-Version: 2.4
+Name: redis-keyvault
+Version: 1.0.0
+Summary: A Python library that implements an encrypted key-value store using Redis Sentinel
+Author-email: Your Name <your.email@example.com>
+License: MIT
+Project-URL: Homepage, https://github.com/yourusername/redis-keyvault
+Project-URL: Repository, https://github.com/yourusername/redis-keyvault
+Project-URL: Issues, https://github.com/yourusername/redis-keyvault/issues
+Project-URL: Documentation, https://github.com/yourusername/redis-keyvault#readme
+Keywords: redis,sentinel,encryption,keyvault,security
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Topic :: Database
+Classifier: Topic :: Security :: Cryptography
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: redis>=4.0.0
+Requires-Dist: cryptography>=3.4.0
+Requires-Dist: python-dotenv>=0.19.0
+Provides-Extra: dev
+Requires-Dist: pytest>=6.0; extra == "dev"
+Requires-Dist: pytest-cov; extra == "dev"
+Requires-Dist: black; extra == "dev"
+Requires-Dist: flake8; extra == "dev"
+Provides-Extra: examples
+Requires-Dist: opensearch-py>=2.0.0; extra == "examples"
+Requires-Dist: mysql-connector-python>=8.0.0; extra == "examples"
+Requires-Dist: kafka-python>=2.0.0; extra == "examples"
+Dynamic: license-file
+
+# Redis KeyVault
+
+A Python library that implements an encrypted key-value store using Redis Sentinel. It allows you to securely store and retrieve sensitive information by encrypting it before storing in Redis.
+
+## Key Features
+
+- **Encrypted Data Storage**: Securely store data using Fernet encryption
+- **Redis Sentinel Support**: High availability through Redis Sentinel cluster connections (requires Sentinel cluster setup)
+- **JSON Data Support**: Store and retrieve complex data in JSON format
+- **Environment Variable Encryption**: Redis connection information is also encrypted and stored in .env file
+- **CLI Interface**: Easy data storage and retrieval from command line
+
+> **Note**: This library requires a Redis Sentinel cluster configuration and cannot be used with standalone Redis servers.
+
+## Installation
+
+Install the required packages:
+
+```bash
+pip install redis cryptography python-dotenv
+```
+
+## Configuration
+
+### 1. Initial Setup
+
+When running the script for the first time, you'll be prompted to enter Redis Sentinel configuration:
+
+```bash
+python redis_keyvault.py
+```
+
+You need to provide the following information:
+- Number of Sentinel nodes (minimum 3, odd number)
+- Sentinel master name
+- Socket timeout value
+- Redis password
+- Redis DB number (0-15)
+- Hostname and port for each Sentinel node
+
+### 2. Environment Variable Structure
+
+After configuration is complete, a `.env` file will be created with the following encrypted environment variables:
+
+```
+HASH_KEY=<encryption_key>
+REDIS_SENTINEL_NODE_COUNT=3
+REDIS_SENTINEL_MASTER_NAME=<encrypted_master_name>
+REDIS_SENTINEL_TIMEOUT=<encrypted_timeout>
+REDIS_PASSWORD=<encrypted_password>
+REDIS_DB=<encrypted_db_number>
+REDIS_SENTINEL_NODE_1=<encrypted_node1_info>
+REDIS_SENTINEL_NODE_2=<encrypted_node2_info>
+REDIS_SENTINEL_NODE_3=<encrypted_node3_info>
+```
+
+## Usage
+
+### Command Line Interface
+
+#### Data Storage
+Store JSON file contents in Redis:
+
+```bash
+python redis_keyvault.py save <json_file>
+```
+
+Example:
+```bash
+python redis_keyvault.py save database-config.json
+```
+
+#### Data Retrieval
+Retrieve stored data by key:
+
+```bash
+python redis_keyvault.py get <key>
+```
+
+Example:
+```bash
+python redis_keyvault.py get database-config
+```
+
+### Using as Python Module
+
+```python
+from redis_keyvault import save_info, get_info, get_redis_connection
+
+# Store data
+data = {
+    "host": "localhost",
+    "port": 3306,
+    "username": "admin",
+    "password": "secret"
+}
+save_info("my-database", data)
+
+# Retrieve data
+retrieved_data = get_info("my-database")
+print(retrieved_data)
+
+# Direct Redis connection usage
+redis_conn = get_redis_connection()
+redis_conn.set("simple-key", "simple-value")
+```
+
+## Usage Examples
+
+### 1. Initial Setup
+
+Interactive prompt for Redis Sentinel configuration on first run:
+
+```bash
+(rkv) H:\git_repo\redis-as-kv>python redis_keyvault.py
+
+.env file does not exist.
+
+=== Redis Sentinel Configuration Input ===
+
+Enter number of Sentinel nodes (minimum 3, odd number): 3
+
+Sentinel master name (e.g., redismaster): redismaster
+Socket timeout value (e.g., 1.0): 1.0
+Redis password: data123!
+Redis DB number (0-15): 9
+
+=== Sentinel Node 1 Information ===
+Sentinel hostname (e.g., L4, node1): 30.0.0.30
+Sentinel port number: 3410
+
+=== Sentinel Node 2 Information ===
+Sentinel hostname (e.g., L4, node1): 30.0.0.31
+Sentinel port number: 3410
+
+=== Sentinel Node 3 Information ===
+Sentinel hostname (e.g., L4, node1): 30.0.0.32
+Sentinel port number: 3410
+
+.env file has been successfully created.
+
+You can now use the following commands:
+  python redis_keyvault.py save <json_file>
+  python redis_keyvault.py get <key>
+```
+
+### 2. Data Storage
+
+Store sample JSON files in Redis KeyVault:
+
+```bash
+(rkv) H:\git_repo\redis-as-kv>python redis_keyvault.py save samples/sample-proxysql.json
+Data successfully saved. (key: info:sample-proxysql)
+
+(rkv) H:\git_repo\redis-as-kv>python redis_keyvault.py save samples/sample-kafka.json   
+Data successfully saved. (key: info:sample-kafka)
+
+(rkv) H:\git_repo\redis-as-kv>python redis_keyvault.py save samples/sample-opensearch.json 
+Data successfully saved. (key: info:sample-opensearch)
+
+(rkv) H:\git_repo\redis-as-kv>python redis_keyvault.py save samples/sample-mariadb.json    
+Data successfully saved. (key: info:sample-mariadb)
+```
+
+### 3. Data Retrieval
+
+Retrieve stored configurations by key:
+
+```bash
+(rkv) H:\git_repo\redis-as-kv>python redis_keyvault.py get sample-proxysql
+{
+    "hostname": "proxysql.host.com",
+    "dbms": "mydatabase",
+    "user": "proxysql-user",
+    "password": "mypassword!",
+    "port": 2503,
+    "external_hostname": "external_hostname.com",
+    "external_port": 2503,
+    "describe": "mariadb proxysql",
+    "memo": "user = proxysql-user",
+    "ssl_option": "no",
+    "ip": "30.0.0.30"
+}
+
+(rkv) H:\git_repo\redis-as-kv>python redis_keyvault.py get sample-opensearch
+{
+    "hostname": "opensearch.example.com",
+    "port": 9200,
+    "username": "admin",
+    "password": "opensearch_password",
+    "index": "application-logs",
+    "ssl": true,
+    "timeout": 30,
+    "describe": "OpenSearch cluster for application logs",
+    "memo": "Production cluster with SSL enabled",
+    "cluster_name": "production-opensearch"
+}
+
+(rkv) H:\git_repo\redis-as-kv>python redis_keyvault.py get sample-kafka
+{
+    "hostname": "kafka.example.com",
+    "port": 9092,
+    "username": "kafka_user",
+    "password": "kafka_password",
+    "topic": "application-events",
+    "group_id": "production-consumer",
+    "ssl": true,
+    "timeout": 30,
+    "describe": "Kafka message broker",
+    "memo": "Production Kafka cluster with SASL authentication",
+    "protocol": "SASL_SSL"
+}
+
+(rkv) H:\git_repo\redis-as-kv>python redis_keyvault.py get sample-mariadb
+{
+    "hostname": "mariadb.example.com",
+    "port": 3306,
+    "database": "production_db",
+    "username": "app_user",
+    "password": "secure_password",
+    "charset": "utf8mb4",
+    "ssl": true,
+    "timeout": 30,
+    "describe": "MariaDB production database",
+    "memo": "Main application database with SSL",
+    "dbms": "mariadb"
+}
+```
+
+### 4. Execution Results
+
+![Execution Results](samples/result.png)
+
+### 5. Application Usage Examples
+
+The `app/` folder contains examples of using stored configurations from Redis KeyVault in real applications:
+
+- **`app/sample-opensearch.py`**: OpenSearch client connection and document indexing/searching examples
+- **`app/sample-mariadb.py`**: MariaDB database connection and CRUD operation examples  
+- **`app/sample-kafka.py`**: Kafka Producer/Consumer connection and message processing examples
+
+Install required packages before running each example:
+
+```bash
+# For OpenSearch example
+pip install opensearch-py
+
+# For MariaDB example  
+pip install mysql-connector-python
+
+# For Kafka example
+pip install kafka-python
+```
+
+Run examples:
+```bash
+python app/sample-opensearch.py
+python app/sample-mariadb.py
+python app/sample-kafka.py
+```
+
+See `app/README.md` for detailed usage instructions.
+
+## Sample JSON Files
+
+`database-config.json`:
+```json
+{
+    "host": "db.example.com",
+    "port": 3306,
+    "database": "production",
+    "username": "app_user",
+    "password": "secure_password",
+    "ssl": true,
+    "connection_timeout": 30
+}
+```
+
+## Security Features
+
+- **Double Encryption**: Both data and connection information are encrypted
+- **Fernet Encryption**: Secure data protection using symmetric key encryption
+- **Environment Variable Protection**: Redis connection information is also encrypted and stored
+- **Key Namespacing**: All keys use `info:` prefix for namespace separation
+
+## Requirements
+
+- Python 3.6+
+- **Redis Server with Sentinel Cluster**: This library requires a Redis Sentinel cluster configuration for high availability. It does not work with standalone Redis instances.
+- Required packages:
+  - `redis`
+  - `cryptography`
+  - `python-dotenv`
+
+> **Important**: This library is designed specifically for Redis Sentinel clusters and requires at least 3 Sentinel nodes for proper operation. Single Redis server setups are not supported.
+
+## Error Handling
+
+- Clear error messages when Redis connection fails
+- JSON parsing error detection and handling
+- Proper exception handling for encryption/decryption failures
+- Environment configuration validation
+
+## License
+
+This project follows the license specified in the [LICENSE](LICENSE) file.
+
+## Contributing
+
+1. Fork this repository
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Create a Pull Request
+
+## Issue Reporting
+
+If you have any problems or suggestions for improvement, please report them on the [Issues](../../issues) page.
