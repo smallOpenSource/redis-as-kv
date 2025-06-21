@@ -1,0 +1,13 @@
+{
+    "hostname": "proxysql.host.com",
+    "dbms": "mydatabase",
+    "user": "proxysql-user",
+    "password": "mypassword!",
+    "port": 2503,
+    "external_hostname": "external_hostname.com",
+    "external_port": 2503,
+    "describe": "mariadb proxysql",
+    "memo": "user = proxysql-user",
+    "ssl_option": "no",
+    "ip": "30.0.0.30"
+}

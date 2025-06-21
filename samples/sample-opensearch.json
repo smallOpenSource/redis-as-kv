@@ -1,0 +1,12 @@
+{
+  "hostname": "opensearch.example.com",
+  "port": 9200,
+  "username": "admin",
+  "password": "opensearch_password",
+  "index": "application-logs",
+  "ssl": true,
+  "timeout": 30,
+  "describe": "OpenSearch cluster for application logs",
+  "memo": "Production cluster with SSL enabled",
+  "cluster_name": "production-opensearch"
+}

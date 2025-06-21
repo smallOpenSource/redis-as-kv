@@ -1,0 +1,13 @@
+{
+  "hostname": "kafka.example.com",
+  "port": 9092,
+  "username": "kafka_user",
+  "password": "kafka_password",
+  "topic": "application-events",
+  "group_id": "production-consumer",
+  "ssl": true,
+  "timeout": 30,
+  "describe": "Kafka message broker",
+  "memo": "Production Kafka cluster with SASL authentication",
+  "protocol": "SASL_SSL"
+}
