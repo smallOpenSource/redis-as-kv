@@ -1,0 +1,6 @@
+redis 
+cryptography 
+python-dotenv
+opensearch-py
+mysql-connector-python
+kafka-python
