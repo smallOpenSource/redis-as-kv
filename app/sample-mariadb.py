@@ -41,7 +41,7 @@ def get_mariadb_connection():
             user=config['username'],
             password=config['password'],
             charset=config['charset'],
-            use_ssl=config['ssl'],
+            #use_ssl=config['ssl'],
             connection_timeout=config['timeout']
         )
         
